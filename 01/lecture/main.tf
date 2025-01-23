@@ -1,25 +1,41 @@
 terraform {
-  required_providers {}
-  required_version = ">=1.8.4"
+  required_providers {
+    yandex = {
+      source = "yandex-cloud/yandex"
+    }
+ docker = {
+      source  = "kreuzwerker/docker"
+      version = "~> 3.0.1"
+    }
+  }
+  required_version = ">= 0.13"
 }
 
-resource "random_password" "any_uniq_name" {
-  length = 16
+provider "yandex" {
+  zone = "<зона_доступности_по_умолчанию>"
 }
 
-resource "local_file" "from_resourse" {
-  content  = random_password.any_uniq_name.result
-  filename = "/tmp/from_resource.txt"
+#однострочный комментарий
+
+resource "random_password" "random_string" {
+  length      = 16
+  special     = false
+  min_upper   = 1
+  min_lower   = 1
+  min_numeric = 1
 }
 
-
-
-
-data "local_file" "version" {
-  filename = "/proc/version"
+resource "docker_image" "nginx" {
+  name         = "nginx:latest"
+  keep_locally = true
 }
 
-resource "local_file" "from_dataresourse" {
-  content  = data.local_file.version.content
-  filename = "/tmp/from_data_source.txt"
+resource "docker_container" "hello_word" {
+  image = docker_image.nginx.image_id
+  name  = "hello_word_${random_password.random_string.result}"
+
+  ports {
+    internal = 80
+    external = 9090
+  }
 }
