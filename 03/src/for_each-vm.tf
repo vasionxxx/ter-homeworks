@@ -12,7 +12,7 @@ resource "yandex_compute_instance" "db" {
 
   boot_disk {
     initialize_params {
-      image_id = "fd81hgrcv6lsnkremf32" # РџСЂРёРјРµСЂ ID РѕР±СЂР°Р·Р° Ubuntu 20.04
+      image_id = data.yandex_compute_image.ubuntu.image_id
       size     = each.value.disk_volume
     }
   }
@@ -20,12 +20,12 @@ resource "yandex_compute_instance" "db" {
   network_interface {
     subnet_id = yandex_vpc_subnet.develop.id
     nat       = true
-    security_group_ids = [yandex_vpc_security_group.example.id] # РќР°Р·РЅР°С‡Р°РµРј РіСЂСѓРїРїСѓ Р±РµР·РѕРїР°СЃРЅРѕСЃС‚Рё
+    security_group_ids = [yandex_vpc_security_group.example.id]
   }
 
   metadata = {
-    ssh-keys = "ubuntu:${file("~/.ssh/id_rsa.pub")}" # РСЃРїРѕР»СЊР·СѓРµРј SSH-РєР»СЋС‡
+    ssh-keys = "ubuntu:${file("~/.ssh/id_rsa.pub")}"
   }
 
-  depends_on = [yandex_compute_instance.web] # Р—Р°РІРёСЃРёРјРѕСЃС‚СЊ РѕС‚ Р’Рњ РёР· count-vm.tf
+  depends_on = [yandex_compute_instance.web]
 }
