@@ -1,3 +1,7 @@
+data "yandex_compute_image" "ubuntu" {
+  family = "ubuntu-2004-lts"
+}
+
 resource "yandex_compute_instance" "web" {
   count = 2
 
@@ -12,7 +16,7 @@ resource "yandex_compute_instance" "web" {
 
   boot_disk {
     initialize_params {
-      image_id = "fd81hgrcv6lsnkremf32"
+      image_id = data.yandex_compute_image.ubuntu.image_id
       size     = 10
     }
   }
