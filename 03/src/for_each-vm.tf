@@ -1,5 +1,5 @@
 resource "yandex_compute_instance" "db" {
-  for_each = { for idx, vm in var.each_vm : idx => vm }
+  for_each = { for idx, vm in var.vm_db_resources : idx => vm }
 
   name        = each.value.vm_name
   platform_id = "standard-v2"
