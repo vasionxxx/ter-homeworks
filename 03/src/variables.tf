@@ -1,4 +1,4 @@
-###cloud vars
+### Общие переменные
 variable "token" {
   type        = string
   description = "OAuth-token; https://cloud.yandex.ru/docs/iam/concepts/authorization/oauth-token"
@@ -19,6 +19,7 @@ variable "default_zone" {
   default     = "ru-central1-a"
   description = "https://cloud.yandex.ru/docs/overview/concepts/geo-scope"
 }
+
 variable "default_cidr" {
   type        = list(string)
   default     = ["10.0.1.0/24"]
@@ -31,7 +32,46 @@ variable "vpc_name" {
   description = "VPC network&subnet name"
 }
 
-variable "each_vm" {
+### Переменные для ВМ
+variable "vm_web_count" {
+  type        = number
+  default     = 2
+  description = "Количество веб-серверов"
+}
+
+variable "vm_storage_count" {
+  type        = number
+  default     = 1
+  description = "Количество хранилищ"
+}
+
+variable "vm_web_resources" {
+  type = object({
+    cores  = number
+    memory = number
+    disk   = number
+  })
+  default = {
+    cores  = 2
+    memory = 2
+    disk   = 10
+  }
+}
+
+variable "vm_storage_resources" {
+  type = object({
+    cores  = number
+    memory = number
+    disk   = number
+  })
+  default = {
+    cores  = 2
+    memory = 4
+    disk   = 10
+  }
+}
+
+variable "vm_db_resources" {
   type = list(object({
     vm_name     = string
     cpu         = number
@@ -50,6 +90,39 @@ variable "each_vm" {
       cpu         = 2
       ram         = 2
       disk_volume = 20
+    }
+  ]
+}
+
+### Переменные для образов
+variable "image_family" {
+  type        = string
+  default     = "ubuntu-2004-lts"
+  description = "Семейство образов для ВМ"
+}
+
+### Переменные для дисков
+variable "storage_disks" {
+  type = list(object({
+    name = string
+    type = string
+    size = number
+  }))
+  default = [
+    {
+      name = "storage-disk-1"
+      type = "network-hdd"
+      size = 1
+    },
+    {
+      name = "storage-disk-2"
+      type = "network-hdd"
+      size = 1
+    },
+    {
+      name = "storage-disk-3"
+      type = "network-hdd"
+      size = 1
     }
   ]
 }
