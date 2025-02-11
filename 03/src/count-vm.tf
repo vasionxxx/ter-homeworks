@@ -1,23 +1,19 @@
-data "yandex_compute_image" "ubuntu" {
-  family = "ubuntu-2004-lts"
-}
-
 resource "yandex_compute_instance" "web" {
-  count = 2
+  count = var.vm_web_count
 
   name        = "web-${count.index + 1}"
   platform_id = "standard-v2"
   zone        = var.default_zone
 
   resources {
-    cores  = 2
-    memory = 2
+    cores  = var.vm_web_resources.cores
+    memory = var.vm_web_resources.memory
   }
 
   boot_disk {
     initialize_params {
       image_id = data.yandex_compute_image.ubuntu.image_id
-      size     = 10
+      size     = var.vm_web_resources.disk
     }
   }
 
